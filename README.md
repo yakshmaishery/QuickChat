@@ -1,38 +1,31 @@
-# sv
+# 🌐 Quick Chat App  
+A real-time chat application built with **SvelteKit**, **Socket.IO**, and styled with **Flowbite** for responsive, accessible, and modern UI design.  
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+![image](https://github.com/user-attachments/assets/581405f7-fcd0-4318-b1cf-7b62a411f28d)
 
-## Creating a project
 
-If you're seeing this, you've probably already done this step. Congrats!
+## ✨ Features  
+- **Real-time Messaging**: Instant communication powered by Socket.IO.  
+- **Responsive Design**: Optimized for both mobile and desktop using Flowbite and Tailwind CSS.  
+- **User-Friendly Interface**: Clean and intuitive design for smooth user experience.  
+- **Lightweight & Fast**: Built on the modern SvelteKit framework for optimal performance.  
 
-```bash
-# create a new project in the current directory
-npx sv create
+---
 
-# create a new project in my-app
-npx sv create my-app
-```
+## 🛠️ Tech Stack  
 
-## Developing
+### Frontend  
+- [SvelteKit](https://kit.svelte.dev/) – Modern app framework for Svelte.  
+- [Flowbite](https://flowbite.com/) – Prebuilt UI components for Tailwind CSS.  
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Backend  
+- [Socket.IO](https://socket.io/) – Real-time communication library.  
+- [Node.js](https://nodejs.org/) – Scalable and efficient backend runtime.  
 
-```bash
-npm run dev
+---
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## 🤝 Contributions
 
-## Building
+Contributions are welcome! Please follow the contribution guidelines and create a pull request.
 
-To create a production version of your app:
 
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

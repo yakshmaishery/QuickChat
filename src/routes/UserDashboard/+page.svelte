@@ -48,7 +48,7 @@
             const div = document.getElementById("scrollableDiv");
             if(div){
                div.scrollTo({
-                  top: div.scrollHeight+20,
+                  top: div.scrollHeight+2000,
                   behavior: "smooth"
                });
             }
