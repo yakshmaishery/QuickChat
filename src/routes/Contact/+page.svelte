@@ -3,5 +3,6 @@
 </svelte:head>
 <script lang="ts">
    import CommonNavBar from "$lib/Mycomponents/CommonNavBar.svelte";
+   export let data;
 </script>
-<CommonNavBar/>
+<CommonNavBar bind:LoginID={data.LoginID}/>
