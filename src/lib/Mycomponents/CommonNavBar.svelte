@@ -16,7 +16,7 @@
      <NavLi href="/Contact">Contact</NavLi>
      <NavLi><DarkMode style="padding:0px"/></NavLi>
      {#if LoginID}
-      <NavLi>{LoginID}</NavLi>
+      <NavLi href="/UserDashboard">{LoginID}</NavLi>
      {/if}
    </NavUl>
  </Navbar>
