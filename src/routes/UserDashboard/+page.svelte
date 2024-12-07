@@ -74,6 +74,7 @@
 
     const SendMessges = () => {
       socket.emit('sendMessage', { CurrentLoginID,currentGroupID, message });
+      message = ""
     }
 
     const CreateNewGroup = () => {
