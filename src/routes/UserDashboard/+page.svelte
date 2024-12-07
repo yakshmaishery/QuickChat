@@ -45,13 +45,15 @@
          socket.on('message', (data:any) => {
             let Data = {CurrentLoginID:data.CurrentLoginID,message:data.message,datetime:new Date().toLocaleDateString()}
             messages = [...messages,Data]
-            const div = document.getElementById("scrollableDiv");
-            if(div){
-               div.scrollTo({
-                  top: div.scrollHeight+2000,
-                  behavior: "smooth"
-               });
-            }
+            setTimeout(() => {
+               const div = document.getElementById("scrollableDiv");
+               if(div){
+                  div.scrollTo({
+                     top: div.scrollHeight+2000,
+                     behavior: "smooth"
+                  });
+               }
+            }, 1000);
          });
          // Listen for incoming messages
          socket.on('leaveRoomMessage', (data:any) => {
