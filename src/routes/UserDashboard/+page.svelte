@@ -43,7 +43,7 @@
 
          // Listen for incoming messages
          socket.on('message', (data:any) => {
-            let Data = {CurrentLoginID:data.CurrentLoginID,message:data.message,datetime:new Date().toLocaleDateString()}
+            let Data = {CurrentLoginID:data.CurrentLoginID,message:data.message,datetime:new Date().toISOString()}
             messages = [...messages,Data]
             setTimeout(() => {
                const div = document.getElementById("scrollableDiv");
@@ -53,7 +53,7 @@
                      behavior: "smooth"
                   });
                }
-            }, 1000);
+            }, 500);
          });
          // Listen for incoming messages
          socket.on('leaveRoomMessage', (data:any) => {
@@ -96,10 +96,10 @@
          {#each messages as ele}
             <div class={`message ${ele.CurrentLoginID == data.LoginID?"sent":"received"}`}>
                 <div class="message-info">
-                    <span class="">{ele.CurrentLoginID}</span>
+                    <span class="message-ID">{ele.CurrentLoginID}</span>
                     <span class="timestamp">{ele.datetime}</span>
                 </div>
-                <div class="message-content">{ele.message}</div>
+                <div class="message-content"><pre>{ele.message}</pre></div>
             </div>
          {/each}
       </div>

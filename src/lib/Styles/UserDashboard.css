@@ -47,6 +47,7 @@
    display: flex;
    justify-content: space-between;
    margin-bottom: 5px;
+   flex-direction: column;
 }
 
 .sender {
@@ -60,4 +61,8 @@
 /* Message Content */
 .message-content {
    font-size: 14px;
+}
+
+.message-ID{
+   font-weight: bold;
 }
