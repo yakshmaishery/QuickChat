@@ -61,6 +61,10 @@
             currentGroupID = ""
             Swal.fire({title:"Left room",text:data.message,confirmButtonColor:"green"})
          });
+         // Listen for incoming messages
+         socket.on('leaveRoomMessageToAll', (data:any) => {
+            Swal.fire({title:"Left room",text:data.message,confirmButtonColor:"green"})
+         });
 
         return () => {
             socket.disconnect();
