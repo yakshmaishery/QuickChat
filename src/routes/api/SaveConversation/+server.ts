@@ -22,7 +22,7 @@ export async function POST({ request }) {
       existingData = JSON.parse(fileContent);
     } catch (error:any) {
       if (error.code !== 'ENOENT') throw error; // Rethrow unexpected errors
-      console.log('File does not exist. Creating a new file.');
+      //console.log('File does not exist. Creating a new file.');
     }
 
     // Append new data
@@ -33,7 +33,7 @@ export async function POST({ request }) {
 
     return json({ success: true, message: 'Data written successfully' });
   } catch (error:any) {
-    console.error('Error processing request:', error);
+    //console.error('Error processing request:', error);
     return json({ success: false, error: error.message }, { status: 500 });
   }
 }
