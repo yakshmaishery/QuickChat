@@ -6,7 +6,7 @@
    import { enhance } from "$app/forms";
    import CommonNavBar from "$lib/Mycomponents/CommonNavBar.svelte";
    import '$lib/Styles/UserDashboard.css'
-   import { Textarea, Toolbar, Heading, Drawer, Button, CloseButton, Input,Hr,P } from 'flowbite-svelte';
+   import { Textarea, Toolbar, Heading, Drawer, Button, CloseButton, Input,Hr,SidebarCta } from 'flowbite-svelte';
    import { BarsOutline,ClipboardSolid } from 'flowbite-svelte-icons';
    import { sineIn } from 'svelte/easing';
    import { onMount } from "svelte";
@@ -184,5 +184,8 @@
       <form method="post" use:enhance>
          <Button disabled={currentGroupID == ""?false:true} type="submit" class="my-2" formaction="/UserDashboard?/LogoutActionMethos" formmethod="POST">Logout</Button>
       </form>
+      <SidebarCta label="Note">
+         <p class="mb-3 text-sm text-primary-900 dark:text-primary-400">The app is currently in its Beta version, so it may become inactive if left unused for more than 15 minutes.</p>
+       </SidebarCta>
     </div>
 </Drawer>
