@@ -7,7 +7,7 @@
    import CommonNavBar from "$lib/Mycomponents/CommonNavBar.svelte";
    import '$lib/Styles/UserDashboard.css'
    import { Textarea, Toolbar, Heading, Drawer, Button, CloseButton, Input,Hr,SidebarCta } from 'flowbite-svelte';
-   import { BarsOutline,ClipboardSolid } from 'flowbite-svelte-icons';
+   import { BarsOutline,ClipboardSolid,CaretRightSolid } from 'flowbite-svelte-icons';
    import { sineIn } from 'svelte/easing';
    import { onMount } from "svelte";
    import Swal from "sweetalert2";
@@ -15,7 +15,7 @@
    export let data
    let hidden1 = true;
    let transitionParams = {
-      x: -320,
+      x: 320,
       duration: 200,
       easing: sineIn
    };
@@ -144,10 +144,10 @@
          <Textarea class="" placeholder="Write a message" bind:value={message} disabled={currentGroupID != ""?false:true}>
            <div slot="footer" class="flex items-center justify-between">
             <div style="display: flex;gap:15px">
-               <Button type="button" on:click={() => (hidden1 = false)}><BarsOutline/></Button>
+               <Button type="submit" disabled={currentGroupID != ""?false:true} on:click={SendMessges}>Send <CaretRightSolid/></Button>
             </div>
             <Toolbar embedded>
-                <Button type="submit" disabled={currentGroupID != ""?false:true} on:click={SendMessges}>Send</Button>
+               <Button type="button" on:click={() => (hidden1 = false)}><BarsOutline/></Button>
                <!-- <ToolbarButton name="Attach file"><PaperClipOutline class="w-6 h-6" /></ToolbarButton> -->
                <!-- <ToolbarButton name="Set location"><MapPinAltSolid class="w-6 h-6" /></ToolbarButton> -->
                <!-- <ToolbarButton name="Upload image"><ImageOutline class="w-6 h-6" /></ToolbarButton> -->
@@ -158,7 +158,7 @@
    </div>
 </div>
 
-<Drawer transitionType="fly" {transitionParams} bind:hidden={hidden1} id="sidebar1" activateClickOutside={false}>
+<Drawer placement="right" transitionType="fly" transitionParams={transitionParams} bind:hidden={hidden1} id="sidebar6">
    <div class="flex items-center">
       <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
       <CloseButton on:click={() => (hidden1 = true)} class="mb-4 dark:text-white" />
