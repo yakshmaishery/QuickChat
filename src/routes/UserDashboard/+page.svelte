@@ -7,7 +7,7 @@
    import CommonNavBar from "$lib/Mycomponents/CommonNavBar.svelte";
    import '$lib/Styles/UserDashboard.css'
    import { Textarea, Toolbar, Heading, Drawer, Button, CloseButton, Input,Hr,P } from 'flowbite-svelte';
-   import { BarsOutline } from 'flowbite-svelte-icons';
+   import { BarsOutline,ClipboardSolid } from 'flowbite-svelte-icons';
    import { sineIn } from 'svelte/easing';
    import { onMount } from "svelte";
    import Swal from "sweetalert2";
@@ -27,8 +27,8 @@
    let CurrentLoginID = data.LoginID
 
    onMount(() => {
-        socket = io('https://chatappserver-1yf9.onrender.com'); // Replace with your server's URL
-      //   socket = io('http://localhost:3000'); // Replace with your server's URL
+       // socket = io('https://chatappserver-1yf9.onrender.com'); // Replace with your server's URL
+         socket = io('http://localhost:3000',{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
 
         socket.on('connect', () => {
             console.log('Connected to the server');
@@ -40,6 +40,13 @@
             currentGroupID = data.key
             Swal.fire({title:"New Join",text:data.msg,confirmButtonColor:"green"})
          });
+
+         socket.on("UserLoggedIN",(data:string)=>{
+            // alert(data)
+            if(data == CurrentLoginID){
+               handleSubmit()
+            }
+         })
 
          // Listen for incoming messages
          socket.on('message', (data:any) => {
@@ -90,6 +97,27 @@
     const LeaveRoom = () => {
       socket.emit('leaveRoom', { CurrentLoginID,currentGroupID });
     }
+
+    const CopyMessage = (msg:string) => {
+      navigator.clipboard.writeText(msg);
+    }
+    async function handleSubmit() {
+        const formData = new FormData();
+      //   formData.append('name', name);
+
+        // Call the action using fetch
+        const res = await fetch('/UserDashboard?/LogoutActionMethos', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (res.ok) {
+            window.location.href="/"
+            // responseMessage = result.message || 'Form submitted successfully!';
+        } else {
+            // responseMessage = 'Failed to submit form.';
+        }
+    }
 </script>
 <div class="Maindash">
    <div>
@@ -100,10 +128,13 @@
          {#each messages as ele}
             <div class={`message ${ele.CurrentLoginID == data.LoginID?"sent":"received"}`}>
                 <div class="message-info">
-                    <span class="message-ID">{ele.CurrentLoginID}</span>
+                    <span class="message-ID">
+                        {ele.CurrentLoginID}
+                        <Button on:click={()=>{CopyMessage(ele.message)}} class="clipboardbtn"><ClipboardSolid/></Button>
+                     </span>
                     <span class="timestamp">{ele.datetime}</span>
                 </div>
-                <div class="message-content"><pre>{ele.message}</pre></div>
+                <div class="message-content"><pre class="dynamicMessage">{ele.message}</pre></div>
             </div>
          {/each}
       </div>

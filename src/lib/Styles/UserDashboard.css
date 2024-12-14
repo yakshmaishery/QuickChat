@@ -65,4 +65,14 @@
 
 .message-ID{
    font-weight: bold;
+   display: flex;
+   gap: 80px;
 }
+.dynamicMessage{
+   overflow-y: auto;
+}
+.clipboardbtn {
+      padding: 0px;
+      background-color: transparent;
+      color: black;
+  }
