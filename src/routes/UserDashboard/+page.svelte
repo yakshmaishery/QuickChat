@@ -25,9 +25,10 @@
    let messages:any = [];
    let joinGroupID = ""
    let CurrentLoginID = data.LoginID
+   let ServerAPI = "https://chatappserver-1yf9.onrender.com"
 
    onMount(() => {
-       socket = io('https://chatappserver-1yf9.onrender.com',{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
+       socket = io(ServerAPI,{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
          // socket = io('http://localhost:3000',{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
 
         socket.on('connect', () => {
@@ -39,6 +40,7 @@
             debugger
             currentGroupID = data.key
             Swal.fire({title:"New Join",html:data.msg,confirmButtonColor:"green"})
+            fetchUsers()
          });
 
          socket.on("UserLoggedIN",(data:string)=>{
@@ -64,6 +66,7 @@
          });
          // Listen for incoming messages
          socket.on('leaveRoomMessage', (data:any) => {
+            messages = []
             joinGroupID = ""
             currentGroupID = ""
             Swal.fire({title:"Left room",html:data.message,confirmButtonColor:"green"})
@@ -118,6 +121,29 @@
             // responseMessage = 'Failed to submit form.';
         }
     }
+
+    // Function to fetch data when button is clicked
+  async function fetchUsers() {
+    try {
+      const response = await fetch(`${ServerAPI}/Messages`);  // API endpoint
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const conversations = await response.json();
+      messages = []
+      conversations.filter((item:any)=>{
+         if(item.RoomID == currentGroupID){
+            let Data = {CurrentLoginID:item.UserLoginID,message:item.Message,datetime:item.Datetime}
+            messages = [...messages,Data]
+         }
+      })
+    } catch (err) {
+      // error = err.message;
+    } finally {
+      // loading = false;  // Stop loading
+    }
+  }
 </script>
 <div class="Maindash">
    <div>
