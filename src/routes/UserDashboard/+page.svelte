@@ -27,7 +27,7 @@
    let CurrentLoginID = data.LoginID
 
    onMount(() => {
-       socket = io('https://chatappserver-1yf9.onrender.com'); // Replace with your server's URL
+       socket = io('https://chatappserver-1yf9.onrender.com',{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
          // socket = io('http://localhost:3000',{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
 
         socket.on('connect', () => {
