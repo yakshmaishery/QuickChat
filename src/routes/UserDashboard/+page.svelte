@@ -110,6 +110,7 @@
             // Cleanup
             delete receivedBuffers[name];
             console.log(`File ${name} has been downloaded.`);
+            Swal.fire({icon:"success",title:"File Added in Attachments"})
          });
 
         return () => {
