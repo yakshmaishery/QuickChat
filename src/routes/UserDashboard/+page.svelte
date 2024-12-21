@@ -156,7 +156,7 @@
                 <div class="message-info">
                     <span class="message-ID">
                         {ele.CurrentLoginID}
-                        <Button on:click={()=>{CopyMessage(ele.message)}} class="clipboardbtn"><ClipboardSolid/></Button>
+                        <Button on:click={()=>{CopyMessage(ele.message)}} class="clipboardbtn dark:bg-transparent"><ClipboardSolid/></Button>
                      </span>
                     <span class="timestamp">{ele.datetime}</span>
                 </div>
