@@ -256,16 +256,6 @@
            <div slot="footer" class="flex items-center justify-between">
             <div style="display: flex;gap:15px">
                <Button type="submit" disabled={currentGroupID != ""?false:true} on:click={SendMessges}>Send <CaretRightSolid/></Button>
-               <ButtonGroup class="*:!ring-primary-700">
-                  <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
-                     <PaperClipOutline class="w-6 h-6" />
-                     Upload file
-                  </Button>
-                  <Button on:click={() => (Attachmentdrawer = false)} disabled={currentGroupID != ""?false:true}>
-                     <BarsOutline class="w-6 h-6" />
-                     Attachment List
-                  </Button>
-                </ButtonGroup>
                <input type="file" id="fileinput" hidden on:change={(e)=>{changeFileMethod(e)}}/>
             </div>
             <Toolbar embedded>
@@ -305,6 +295,17 @@
       <form method="post" use:enhance>
          <Button disabled={currentGroupID == ""?false:true} type="submit" class="my-2" formaction="/UserDashboard?/LogoutActionMethos" formmethod="POST">Logout</Button>
       </form>
+      <br/>
+      <ButtonGroup class="*:!ring-primary-700">
+         <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
+            <PaperClipOutline class="w-6 h-6" />
+            Upload file
+         </Button>
+         <Button on:click={() => (Attachmentdrawer = false)} disabled={currentGroupID != ""?false:true}>
+            <BarsOutline class="w-6 h-6" />
+            Attachment List
+         </Button>
+       </ButtonGroup>
       <SidebarCta label="Note">
          <p class="mb-3 text-sm text-primary-900 dark:text-primary-400">The app is currently in its Beta version, so it may become inactive if left unused for more than 15 minutes.</p>
        </SidebarCta>
