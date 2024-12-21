@@ -6,19 +6,25 @@
    import { enhance } from "$app/forms";
    import CommonNavBar from "$lib/Mycomponents/CommonNavBar.svelte";
    import '$lib/Styles/UserDashboard.css'
-   import { Textarea, Toolbar, Heading, Drawer, Button, CloseButton, Input,Hr,SidebarCta } from 'flowbite-svelte';
-   import { BarsOutline,ClipboardSolid,CaretRightSolid } from 'flowbite-svelte-icons';
+   import { Textarea, Toolbar, Heading, Drawer, Button, CloseButton, Input,Hr,SidebarCta,ToolbarButton,Listgroup,ButtonGroup } from 'flowbite-svelte';
+   import { BarsOutline,ClipboardSolid,CaretRightSolid,PaperClipOutline } from 'flowbite-svelte-icons';
    import { sineIn } from 'svelte/easing';
    import { onMount } from "svelte";
    import Swal from "sweetalert2";
 
    export let data
    let hidden1 = true;
+   let Attachmentdrawer = true;
    let transitionParams = {
       x: 320,
       duration: 200,
       easing: sineIn
    };
+   let transitionParams1 = {
+    x: -320,
+    duration: 200,
+    easing: sineIn
+  };
    let currentGroupID = ""
    let socket: any;
    let message = '';
@@ -26,6 +32,9 @@
    let joinGroupID = ""
    let CurrentLoginID = data.LoginID
    let ServerAPI = "https://chatappserver-1yf9.onrender.com"
+   const CHUNK_SIZE = 64 * 1024; // 64 KB
+   const receivedBuffers:any = {};
+   let AttachmentsArray: { fileName: any; FILE: Blob; }[]=[]
 
    onMount(() => {
        socket = io(ServerAPI,{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
@@ -74,6 +83,33 @@
          // Listen for incoming messages
          socket.on('leaveRoomMessageToAll', (data:any) => {
             Swal.fire({title:"Left room",html:data.message,confirmButtonColor:"green"})
+         });
+
+         socket.on('receive-file-chunk', (data:any) => {
+            const { chunk, name, size, currentChunk } = data;
+
+            if (!receivedBuffers[name]) {
+               receivedBuffers[name] = [];
+            }
+
+            receivedBuffers[name].push(new Uint8Array(chunk));
+            console.log(`Received chunk ${currentChunk} of ${name}`);
+         });
+
+         socket.on('receive-file-end', (data:any) => {
+            const { name } = data;
+
+            // Combine the chunks and create a Blob for download
+            const blob = new Blob(receivedBuffers[name]);
+            // const link = document.createElement('a');
+            // link.href = URL.createObjectURL(blob);
+            // link.download = name;
+            // link.click();
+            AttachmentsArray.push({fileName:name,FILE:blob})
+
+            // Cleanup
+            delete receivedBuffers[name];
+            console.log(`File ${name} has been downloaded.`);
          });
 
         return () => {
@@ -144,6 +180,54 @@
       // loading = false;  // Stop loading
     }
   }
+
+  const callFileupload = () => {
+   document.getElementById("fileinput")?.click()
+  }
+
+  const changeFileMethod = (event:any) => {
+   const file = event.target.files[0];
+   sendFile(file);
+  }
+  function sendFile(file:any) {
+      const reader = new FileReader();
+      let currentChunk = 0;
+
+      reader.onload = (event:any) => {
+         socket.emit('file-chunk', {
+            currentGroupID,
+            CurrentLoginID,
+            name: file.name,
+            size: file.size,
+            chunk: event.target.result,
+            currentChunk,
+         });
+
+         currentChunk++;
+         if (currentChunk * CHUNK_SIZE < file.size) {
+            readNextChunk();
+         } else {
+            socket.emit('file-end', { currentGroupID,CurrentLoginID, name: file.name });
+            Swal.fire({title:"File Uploaded",icon:"success"})
+         }
+      };
+
+      const readNextChunk = () => {
+         const start = currentChunk * CHUNK_SIZE;
+         const end = Math.min(file.size, start + CHUNK_SIZE);
+         const blob = file.slice(start, end);
+         reader.readAsArrayBuffer(blob);
+      };
+
+      readNextChunk();
+   }
+
+   const downloadAttchment = (name:any,blob:any) => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = name;
+      link.click();
+   }
 </script>
 <div class="Maindash">
    <div>
@@ -171,10 +255,20 @@
            <div slot="footer" class="flex items-center justify-between">
             <div style="display: flex;gap:15px">
                <Button type="submit" disabled={currentGroupID != ""?false:true} on:click={SendMessges}>Send <CaretRightSolid/></Button>
+               <ButtonGroup class="*:!ring-primary-700">
+                  <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
+                     <PaperClipOutline class="w-6 h-6" />
+                     Upload file
+                  </Button>
+                  <Button on:click={() => (Attachmentdrawer = false)} disabled={currentGroupID != ""?false:true}>
+                     <BarsOutline class="w-6 h-6" />
+                     Attachment List
+                  </Button>
+                </ButtonGroup>
+               <input type="file" id="fileinput" hidden on:change={(e)=>{changeFileMethod(e)}}/>
             </div>
             <Toolbar embedded>
                <Button type="button" on:click={() => (hidden1 = false)}><BarsOutline/></Button>
-               <!-- <ToolbarButton name="Attach file"><PaperClipOutline class="w-6 h-6" /></ToolbarButton> -->
                <!-- <ToolbarButton name="Set location"><MapPinAltSolid class="w-6 h-6" /></ToolbarButton> -->
                <!-- <ToolbarButton name="Upload image"><ImageOutline class="w-6 h-6" /></ToolbarButton> -->
              </Toolbar>
@@ -214,4 +308,15 @@
          <p class="mb-3 text-sm text-primary-900 dark:text-primary-400">The app is currently in its Beta version, so it may become inactive if left unused for more than 15 minutes.</p>
        </SidebarCta>
     </div>
+</Drawer>
+<Drawer transitionType="fly" bind:transitionParams={transitionParams1} bind:hidden={Attachmentdrawer} id="sidebar1">
+   <div class="flex items-center">
+      <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Attachments</h5>
+      <CloseButton on:click={() => (Attachmentdrawer = true)} class="mb-4 dark:text-white" />
+    </div>
+   {#if AttachmentsArray.length > 0}
+         <Listgroup active items={AttachmentsArray} let:item class="w-full" on:click={(e) => downloadAttchment(e.detail.fileName,e.detail.FILE)}>
+            {item.fileName}
+         </Listgroup>
+       {/if}
 </Drawer>
