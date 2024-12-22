@@ -297,10 +297,6 @@
       </form>
       <br/>
       <ButtonGroup class="*:!ring-primary-700">
-         <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
-            <PaperClipOutline class="w-6 h-6" />
-            Upload file
-         </Button>
          <Button on:click={() => (Attachmentdrawer = false)} disabled={currentGroupID != ""?false:true}>
             <BarsOutline class="w-6 h-6" />
             Attachment List
@@ -311,10 +307,16 @@
        </SidebarCta>
     </div>
 </Drawer>
-<Drawer transitionType="fly" bind:transitionParams={transitionParams1} bind:hidden={Attachmentdrawer} id="sidebar1">
+<Drawer transitionType="fly" bind:transitionParams={transitionParams1} bind:hidden={Attachmentdrawer} id="sidebar1" activateClickOutside={false}>
    <div class="flex items-center">
       <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Attachments</h5>
       <CloseButton on:click={() => (Attachmentdrawer = true)} class="mb-4 dark:text-white" />
+    </div>
+    <div>
+      <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
+         <PaperClipOutline class="w-6 h-6" />
+         Upload file
+      </Button>
     </div>
    {#if AttachmentsArray.length > 0}
          <Listgroup active items={AttachmentsArray} let:item class="w-full" on:click={(e) => downloadAttchment(e.detail.fileName,e.detail.FILE)}>
