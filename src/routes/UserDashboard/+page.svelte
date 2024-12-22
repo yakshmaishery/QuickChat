@@ -32,9 +32,10 @@
    let joinGroupID = ""
    let CurrentLoginID = data.LoginID
    let ServerAPI = "https://chatappserver-1yf9.onrender.com"
+   // let ServerAPI = "http://localhost:3000"
    const CHUNK_SIZE = 64 * 1024; // 64 KB
    const receivedBuffers:any = {};
-   let AttachmentsArray: { fileName: any; FILE: Blob; }[]=[]
+   let AttachmentsArray: { fileName: any; FILE: any;mimetype:string }[]=[]
 
    onMount(() => {
        socket = io(ServerAPI,{query:{CurrentLoginID:CurrentLoginID}}); // Replace with your server's URL
@@ -50,6 +51,7 @@
             currentGroupID = data.key
             Swal.fire({title:"New Join",html:data.msg,confirmButtonColor:"green"})
             fetchUsers()
+            fetchAttachments()
          });
 
          socket.on("UserLoggedIN",(data:string)=>{
@@ -97,7 +99,7 @@
          });
 
          socket.on('receive-file-end', (data:any) => {
-            const { name } = data;
+            const { name,mimetype } = data;
 
             // Combine the chunks and create a Blob for download
             const blob = new Blob(receivedBuffers[name]);
@@ -105,7 +107,12 @@
             // link.href = URL.createObjectURL(blob);
             // link.download = name;
             // link.click();
-            AttachmentsArray.push({fileName:name,FILE:blob})
+            blobToBase64(blob)
+            .then(base64String => {
+               // console.log(base64String);  // Base64 string
+               AttachmentsArray.push({fileName:name,FILE:base64String,mimetype:mimetype})
+            })
+            UploadFileinDB(blob,currentGroupID,name,mimetype)
 
             // Cleanup
             delete receivedBuffers[name];
@@ -208,7 +215,7 @@
          if (currentChunk * CHUNK_SIZE < file.size) {
             readNextChunk();
          } else {
-            socket.emit('file-end', { currentGroupID,CurrentLoginID, name: file.name });
+            socket.emit('file-end', { currentGroupID,CurrentLoginID, name: file.name,mimetype:file.type });
             Swal.fire({title:"File Uploaded",icon:"success"})
          }
       };
@@ -225,10 +232,78 @@
 
    const downloadAttchment = (name:any,blob:any) => {
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
+      link.href = blob;
       link.download = name;
       link.click();
    }
+
+   const UploadFileinDB = async (file:any,roomID:any,filename:any,mimetype:any) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('roomID', roomID);
+      formData.append('filename', filename);
+      formData.append('mimetype', mimetype);
+      try {
+          const response = await fetch(`${ServerAPI}/upload`, {
+              method: 'POST',
+              body: formData
+          });
+          if (!response.ok) {
+              throw new Error('Failed to upload file.');
+          }
+          const result = await response.text();
+         //  alert(`File uploaded successfully: ${result}`);
+      } catch (error) {
+          console.error('Error:', error);
+         //  alert('Error uploading file.');
+      }
+   }
+
+   async function fetchAttachments() {
+    try {
+      const response = await fetch(`${ServerAPI}/Attachments?roomID=${currentGroupID}`);  // API endpoint
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const conversations = await response.json();
+      AttachmentsArray = []
+      conversations.filter((item:any)=>{
+         let Data = {fileName:item.filename,FILE:item.FILE,mimetype:item.mimetype}
+         AttachmentsArray = [...AttachmentsArray,Data]
+         debugger
+         // console.table(item)
+         // navigator.clipboard.writeText(item.FILE);
+         // if(item.RoomID == currentGroupID){
+         // }
+      })
+    } catch (err) {
+      // error = err.message;
+      console.error(err)
+    } finally {
+      // loading = false;  // Stop loading
+    }
+  }
+
+  function blobToBase64(blob:any) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            // reader.result contains the base64 string (including the data URL prefix)
+            if(reader.result){
+               resolve(reader.result);  // Remove the data URL prefix (e.g., "data:image/png;base64,")
+            }
+        };
+
+        reader.onerror = (error) => {
+            reject(error);
+        };
+
+        // Read the Blob as a data URL
+        reader.readAsDataURL(blob);
+    });
+}
 </script>
 <div class="Maindash">
    <div>
