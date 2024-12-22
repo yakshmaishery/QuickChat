@@ -387,7 +387,7 @@
       <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Attachments</h5>
       <CloseButton on:click={() => (Attachmentdrawer = true)} class="mb-4 dark:text-white" />
     </div>
-    <div>
+    <div style="margin-bottom: 20px;">
       <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
          <PaperClipOutline class="w-6 h-6" />
          Upload file
