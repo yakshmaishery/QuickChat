@@ -382,7 +382,7 @@
          </Button>
        </ButtonGroup>
       <SidebarCta label="Note">
-         <p class="mb-3 text-sm text-primary-900 dark:text-primary-400">The app is currently in its Beta version, so it may become inactive if left unused for more than 15 minutes.</p>
+         <p class="mb-3 text-sm text-primary-900 dark:text-primary-400">The App is currently using free services due to which we store the data of every conversations at very short amount of time.</p>
        </SidebarCta>
     </div>
 </Drawer>
