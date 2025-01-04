@@ -332,6 +332,10 @@
             <div style="display: flex;gap:15px">
                <Button type="submit" disabled={currentGroupID != ""?false:true} on:click={SendMessges}>Send <CaretRightSolid/></Button>
                <input type="file" id="fileinput" hidden on:change={(e)=>{changeFileMethod(e)}}/>
+               <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
+                  <PaperClipOutline class="w-6 h-6" />
+                  Upload file
+               </Button>
             </div>
             <Toolbar embedded>
                <Button type="button" on:click={() => (hidden1 = false)}><BarsOutline/></Button>
@@ -388,10 +392,7 @@
       <CloseButton on:click={() => (Attachmentdrawer = true)} class="mb-4 dark:text-white" />
     </div>
     <div style="margin-bottom: 20px;">
-      <Button on:click={callFileupload} disabled={currentGroupID != ""?false:true}>
-         <PaperClipOutline class="w-6 h-6" />
-         Upload file
-      </Button>
+      
     </div>
    {#if AttachmentsArray.length > 0}
          <Listgroup active items={AttachmentsArray} let:item class="w-full" on:click={(e) => downloadAttchment(e.detail.fileName,e.detail.FILE)}>
